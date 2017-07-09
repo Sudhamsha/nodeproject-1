@@ -1,7 +1,8 @@
 var express = require("express");
 var app = express();
-
 var port = process.env.PORT;
+var eventRouter = require('./src/routes/eventRoutes');
+var dbRouter = require('./src/routes/dbRoutes');
 
 app.use(express.static("public"));
 app.use(express.static("bower_components"))
@@ -9,17 +10,22 @@ app.use(express.static("bower_components"))
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
-app.get("/", function(req, res){
-    res.render('index', {
-        list: ['Hello', 'World', 'Sud'],
+var navItems = {
         navItems: [
             {href: 'services', label: 'Services'},
             {href: 'portfolio', label:  'Portfolio'},
             {href: 'about', label:  'About'},
             {href: 'team', label:  'Team'},
+            {href: 'events', label:  'Events'},
             {href: 'contact', label:  'Contact'},
         ]
-    });
+    };
+    
+app.use('/events', eventRouter);
+app.use('/db', dbRouter);
+
+app.get("/", function(req, res){
+    res.render('index', navItems);
 });
 
 app.get("/home", function(req, res){
